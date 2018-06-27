@@ -30,6 +30,9 @@ public class IndexController {
         } catch (AuthenticationException e) {
             return e.getMessage();
         }
+        if (subject.hasRole("admin")){
+            return "welcome admin";
+        }
         return "login success,welcome to shiro!";
     }
 

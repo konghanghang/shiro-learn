@@ -1,5 +1,7 @@
 package com.ysla.realm;
 
+import com.ysla.dao.IUserDao;
+import com.ysla.vo.User;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -11,10 +13,16 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 
+import javax.annotation.Resource;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class WebRealm extends AuthorizingRealm {
+
+    @Resource
+    private IUserDao userDao;
+
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         String username = (String) principals.getPrimaryPrincipal();
@@ -32,9 +40,8 @@ public class WebRealm extends AuthorizingRealm {
      * @return
      */
     private Set<String> getPermissionsByUsername(String username) {
-        Set<String> set = new HashSet<>();
-        set.add("user:delete");
-        set.add("user:add");
+        List<String> list = userDao.getPermissionByUsername(username);
+        Set<String> set = new HashSet<>(list);
         return set;
     }
 
@@ -44,9 +51,8 @@ public class WebRealm extends AuthorizingRealm {
      * @return
      */
     private Set<String> getRolesByUsername(String username) {
-        Set<String> set = new HashSet<>();
-        set.add("admin");
-        set.add("user");
+        List<String> list = userDao.getRoleByUsername(username);
+        Set<String> set = new HashSet<>(list);
         return set;
     }
 
@@ -57,9 +63,9 @@ public class WebRealm extends AuthorizingRealm {
         if (password == null){
             return null;
         }
-        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo("test",password,getName());
+        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(username,password,getName());
         // 加盐
-        authenticationInfo.setCredentialsSalt(ByteSource.Util.bytes("test"));
+        authenticationInfo.setCredentialsSalt(ByteSource.Util.bytes(username));
         return authenticationInfo;
     }
 
@@ -69,8 +75,11 @@ public class WebRealm extends AuthorizingRealm {
      * @return
      */
     private String getPasswordByUsername(String username) {
-        System.out.println(username);
-        return "c8ae52070cac2f9bb6eba2b785cb3ed1";
+        User user = userDao.getUserByUsername(username);
+        if(user != null){
+            return user.getPassword();
+        }
+        return null;
     }
 
     public static void main(String[] args) {
