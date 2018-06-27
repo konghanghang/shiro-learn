@@ -3,6 +3,7 @@ package com.ysla.realm;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.junit.Test;
@@ -18,6 +19,11 @@ public class WebRealmTest {
         // 构建securityManager环境
         DefaultSecurityManager defaultSecurityManager = new DefaultSecurityManager();
         defaultSecurityManager.setRealm(webRealm);
+
+        HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher();
+        credentialsMatcher.setHashAlgorithmName("md5");
+        credentialsMatcher.setHashIterations(1);
+        webRealm.setCredentialsMatcher(credentialsMatcher);
 
         // 主题提交认证请求
         SecurityUtils.setSecurityManager(defaultSecurityManager);

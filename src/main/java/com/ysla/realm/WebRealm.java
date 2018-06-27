@@ -6,8 +6,10 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.util.ByteSource;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,6 +26,11 @@ public class WebRealm extends AuthorizingRealm {
         return authorizationInfo;
     }
 
+    /**
+     * 模拟从数据库获取权限信息
+     * @param username
+     * @return
+     */
     private Set<String> getPermissionsByUsername(String username) {
         Set<String> set = new HashSet<>();
         set.add("user:delete");
@@ -31,6 +38,11 @@ public class WebRealm extends AuthorizingRealm {
         return set;
     }
 
+    /**
+     * 模拟从数据库获取用户角色
+     * @param username
+     * @return
+     */
     private Set<String> getRolesByUsername(String username) {
         Set<String> set = new HashSet<>();
         set.add("admin");
@@ -46,11 +58,23 @@ public class WebRealm extends AuthorizingRealm {
             return null;
         }
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo("test",password,getName());
+        // 加盐
+        authenticationInfo.setCredentialsSalt(ByteSource.Util.bytes("test"));
         return authenticationInfo;
     }
 
+    /**
+     * 模拟从数据库按照用户名获取密码
+     * @param username
+     * @return
+     */
     private String getPasswordByUsername(String username) {
         System.out.println(username);
-        return "1234567";
+        return "c8ae52070cac2f9bb6eba2b785cb3ed1";
+    }
+
+    public static void main(String[] args) {
+        Md5Hash md5Hash = new Md5Hash("1234567","test");
+        System.out.println(md5Hash.toString());
     }
 }
