@@ -5,13 +5,37 @@ import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class WebRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        return null;
+        String username = (String) principals.getPrimaryPrincipal();
+        Set<String> roles = getRolesByUsername(username);
+        Set<String> permissions = getPermissionsByUsername(username);
+        SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
+        authorizationInfo.setRoles(roles);
+        authorizationInfo.setStringPermissions(permissions);
+        return authorizationInfo;
+    }
+
+    private Set<String> getPermissionsByUsername(String username) {
+        Set<String> set = new HashSet<>();
+        set.add("user:delete");
+        set.add("user:add");
+        return set;
+    }
+
+    private Set<String> getRolesByUsername(String username) {
+        Set<String> set = new HashSet<>();
+        set.add("admin");
+        set.add("user");
+        return set;
     }
 
     @Override
