@@ -45,12 +45,18 @@ public class IndexController {
         return "testRole success";
     }
 
-    @RequiresRoles("admin1")
+    @RequiresRoles(value = {"admin1","admin"})
     @RequiresPermissions("user:delete")
     @RequestMapping(value = "testRole1",method = RequestMethod.GET)
     @ResponseBody
     public String testRole1(){
         return "testRole1 success";
+    }
+
+    @RequestMapping(value = "testRoleFilter",method = RequestMethod.GET)
+    @ResponseBody
+    public String testRoleFilter(){
+        return "testRoleFilter success";
     }
 
 }
