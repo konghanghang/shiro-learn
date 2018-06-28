@@ -40,6 +40,7 @@ public class WebRealm extends AuthorizingRealm {
      * @return
      */
     private Set<String> getPermissionsByUsername(String username) {
+        System.out.println("从数据库获取数据");
         List<String> list = userDao.getPermissionByUsername(username);
         Set<String> set = new HashSet<>(list);
         return set;

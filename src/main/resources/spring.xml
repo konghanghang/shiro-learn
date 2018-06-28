@@ -7,7 +7,7 @@
 
     <import resource="spring-dao.xml"/>
     <import resource="spring-redis.xml"/>
-    <content:component-scan base-package="com.ysla.dao,com.ysla.util"/>
+    <content:component-scan base-package="com.ysla.dao,com.ysla.util,com.ysla.cache"/>
 
     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
         <property name="securityManager" ref="securityManager"/>
@@ -33,6 +33,7 @@
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
         <property name="realm" ref="webRealm"></property>
         <property name="sessionManager" ref="sessionManager"/>
+        <property name="cacheManager" ref="cacheManager"/>
     </bean>
 
     <bean id="webRealm" class="com.ysla.realm.WebRealm">
@@ -49,5 +50,7 @@
     </bean>
 
     <bean id="redisSessionDao" class="com.ysla.session.RedisSessionDao"/>
+
+    <bean id="cacheManager" class="com.ysla.cache.RedisCacheManager"/>
 
 </beans>
