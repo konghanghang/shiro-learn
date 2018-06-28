@@ -25,10 +25,11 @@ public class IndexController {
     @ResponseBody
     public String login(User user){
         Subject subject = SecurityUtils.getSubject();
-        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUsername(),
+        UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(),
                 user.getPassword());
         try {
-            subject.login(usernamePasswordToken);
+            token.setRememberMe(true);
+            subject.login(token);
         } catch (AuthenticationException e) {
             return e.getMessage();
         }
