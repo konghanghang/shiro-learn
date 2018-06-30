@@ -2,6 +2,7 @@ package com.ysla.filter;
 
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authz.AuthorizationFilter;
+import org.apache.shiro.web.util.WebUtils;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -32,5 +33,22 @@ public class RolesOrFilter extends AuthorizationFilter {
             }
         }
         return false;
+    }
+
+    @Override
+    protected boolean pathsMatch(String path, ServletRequest request) {
+        String requestURI = getPathWithinApplication(request);
+        System.out.println("Attempting to match pattern '"+path+"' with current requestURI '"+requestURI+"'...");
+
+        // path: url==method eg: http://api/menu==GET   需要解析出path中的url和httpMethod
+        String[] strings = path.split("--");
+        if (strings.length <= 1) {
+            // 分割出来只有URL
+            return pathsMatch(strings[0], requestURI);
+        } else {
+            // 分割出url+httpMethod,判断httpMethod和request请求的method是否一致,不一致直接false
+            String httpMethod = WebUtils.toHttp(request).getMethod().toUpperCase();
+            return httpMethod.equals(strings[1].toUpperCase()) && pathsMatch(strings[0], requestURI);
+        }
     }
 }

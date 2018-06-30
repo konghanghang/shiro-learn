@@ -9,7 +9,7 @@
     <import resource="spring-redis.xml"/>
     <content:component-scan base-package="com.ysla.dao,com.ysla.util,com.ysla.cache"/>
 
-    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+    <bean id="shiroFilter" class="com.ysla.filter.config.RestShiroFilterFactoryBean">
         <property name="securityManager" ref="securityManager"/>
         <property name="loginUrl" value="login.html"/>
         <property name="unauthorizedUrl" value="403.html"/>
@@ -17,6 +17,7 @@
             <value>
                 /login.html = anon
                 /login1 = anon
+                /test--GET=rolesOr["admin","admin1"]
                 /testRoleFilter = rolesOr["admin","admin1"]
                 /* = authc
             </value>

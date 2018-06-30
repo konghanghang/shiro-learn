@@ -60,4 +60,16 @@ public class IndexController {
         return "testRoleFilter success";
     }
 
+    @RequestMapping(value = "test",method = RequestMethod.GET)
+    @ResponseBody
+    public String testGet(){
+        return "test get";
+    }
+
+    @RequestMapping(value = "test",method = RequestMethod.POST)
+    @ResponseBody
+    public String testPost(){
+        return "test post";
+    }
+
 }
